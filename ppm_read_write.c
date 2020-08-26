@@ -10,6 +10,19 @@ void fail(char *s)
     exit(1);
 }
 
+#define col 255
+
+uint8_t color[] =
+{
+    col, col, col,
+    col, col, 0,
+    0, col, col,
+    0, col, 0,
+    col, 0, col,
+    col, 0, 0,
+    0, 0, col
+};
+
 int main(int argc, char *argv[])
 {
     if (argc != 4) // check correct number of arguments
