@@ -12,21 +12,21 @@ void fail(char *s)
     exit(1);
 }
 
-
-int read_p3(FILE *file_in, int width, int height)
+unsigned int *read_p3(FILE *file_in, int width, int height)
 {
     // I think everything in read_p3 and read_p6 will be inside
     // a while loop -> while not at end of file
     return 0;
 }
 
-int read_p6(FILE *file_in, int width, int height)
+unsigned int *read_p6(FILE *file_in, int width, int height)
 {
     return 0;
 }
 
 int write_p3(FILE *file_out) // this and write_p6 might have an additional argument (int *pixmap)
 {
+    // fprintf
     return 0;
 }
 
@@ -38,7 +38,7 @@ int write_p6(FILE *file_out)
 int main(int argc, char *argv[])
 {
     const int MAX = 100;
-    char delim[] = " ", buffer[100], hash, magic;
+    char buffer[100], hash, magic;
     char *magic_number, *line, *color;
     int maxcolor, dimensions, width, height;
     bool p3 = false, p6 = false;
@@ -107,18 +107,18 @@ int main(int argc, char *argv[])
     // call either read_p6 or read_p3
     if (p3)
     {
-        read_p6(infile, width, height);
-        write_p3(outfile);
+        printf("convert data to P%d\n", format);
+        printf("call read_p3\n");
+        read_p3(infile, width, height);
     }
     else if (p6)
     {
-        read_p3(infile, width, height);
-        write_p6(outfile);
+        printf("convert data to P%d\n", format);
+        printf("call read_p6\n");
+        read_p6(infile, width, height);
     }
     else
     {
-        fail("Incorrect file format.\n");
+        fail("Incorrect header data.\n");
     }
 }
-
-
