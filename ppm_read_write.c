@@ -25,7 +25,7 @@ int read_p6(FILE *file_in, int width, int height)
     return 0;
 }
 
-int write_p3(FILE *file_out) // this and write_p6 might have an argument (int *pixmap)
+int write_p3(FILE *file_out) // this and write_p6 might have an additional argument (int *pixmap)
 {
     return 0;
 }
