@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 void fail(char *s)
 {
@@ -10,6 +11,7 @@ void fail(char *s)
     printf("./ppmrw FORMAT_# INPUT_PPM OUTPUT_PPM\n\n");
     exit(1);
 }
+
 
 int read_p3(FILE *file_in, int width, int height)
 {
@@ -118,3 +120,5 @@ int main(int argc, char *argv[])
         fail("Incorrect file format.\n");
     }
 }
+
+
