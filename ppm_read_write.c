@@ -4,6 +4,18 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#define col 255
+
+uint8_t bar_color[] = {
+  col, col, col,
+  col, col,   0,
+    0, col, col,
+    0, col,   0,
+  col,   0, col,
+  col,   0,   0,
+    0,   0, col
+};
+
 void fail(char *s)
 {
     printf("\nError: %s\n\n", s);
@@ -12,33 +24,55 @@ void fail(char *s)
     exit(1);
 }
 
-unsigned int *read_p3(FILE *file_in, int width, int height)
+uint8_t *read_p3(FILE *file_in, int width, int height)
 {
     // I think everything in read_p3 and read_p6 will be inside
     // a while loop -> while not at end of file
+        
+    int pixmap_size = width*height*3; // not sure if you need the 3 for the colors (RGB)?
+    uint8_t *pixmap = malloc(pixmap_size);
+
+    while(!feof(file_in))
+    {
+        
+    }
+
+    fclose(file_in);
+    return pixmap;
+}
+
+uint8_t *read_p6(FILE *file_in, int width, int height)
+{
+    int pixmap_size = width*height*3; // same ? about using 3 for RGB
+    uint8_t *pixmap = malloc(pixmap_size);
+    
+    while(!feof(file_in))
+    {
+        fread(pixmap, sizeof(uint8_t), width*height, file_in);
+    }   
+
+    fclose(file_in);
+    return pixmap;
+}
+
+int write_p3(FILE *file_out, uint8_t *pixmap) // this and write_p6 might have an additional argument (int *pixmap)
+{
+    
+    fclose(file_out);
     return 0;
 }
 
-unsigned int *read_p6(FILE *file_in, int width, int height)
+int write_p6(FILE *file_out, uint8_t *pixmap)
 {
-    return 0;
-}
-
-int write_p3(FILE *file_out) // this and write_p6 might have an additional argument (int *pixmap)
-{
-    // fprintf
-    return 0;
-}
-
-int write_p6(FILE *file_out)
-{
+    fwrite(pixmap, sizeof(uint8_t), 1, file_out); // not sure about the num values for second and third args 
+    fclose(file_out);
     return 0;
 }
 
 int main(int argc, char *argv[])
 {
     const int MAX = 100;
-    char buffer[100], hash, magic;
+    char delim[] = " ", buffer[100], hash, magic;
     char *magic_number, *line, *color;
     int maxcolor, dimensions, width, height;
     bool p3 = false, p6 = false;
@@ -63,6 +97,7 @@ int main(int argc, char *argv[])
         fail("Input and output files must be of type .ppm.");
     }
 
+    // open files to be read from/written to
     FILE *infile = fopen(argv[2], "rb");
     FILE *outfile = fopen(argv[3], "wb");
 
@@ -104,21 +139,22 @@ int main(int argc, char *argv[])
         fail("Wrong max color.\n");
     }
 
+    uint8_t *pixmap; // not sure if you need an empty pixmap or to establish one fully
+
     // call either read_p6 or read_p3
     if (p3)
     {
-        printf("convert data to P%d\n", format);
-        printf("call read_p3\n");
-        read_p3(infile, width, height);
+        pixmap = read_p6(infile, width, height); 
+        write_p3(outfile, pixmap); 
     }
     else if (p6)
     {
-        printf("convert data to P%d\n", format);
-        printf("call read_p6\n");
-        read_p6(infile, width, height);
+        pixmap = read_p3(infile, width, height);
+        write_p6(outfile, pixmap);
     }
     else
     {
-        fail("Incorrect header data.\n");
+        fail("Incorrect file format.\n");
     }
 }
+
