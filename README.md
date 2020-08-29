@@ -13,3 +13,6 @@ and the two files to be run through the program (in that order). The program is 
 write P6 or P3 .ppm files).
 
 # Known Issues
+There are some major issues we weren't able to resolve in time.
+* This program doesn't convert ASCII to binary nor vice versa.
+* The file data is probably not stored correctly. We had some success converting a P6 to another P6, (i.e. storing rawbits data in memory and writing that data to a new file), but the resulting image is roughly 3 times smaller than expected.
