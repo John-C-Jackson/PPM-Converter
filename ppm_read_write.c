@@ -41,10 +41,9 @@ uint8_t *read_p6(FILE *file_in, int width, int height) {
 void write_p3(char *outfile, uint8_t *pixmap, int width, int height) {
     FILE *file = fopen(outfile, "wb");
     fprintf(file, "P3\n%u %u\n255\n", width, height);
-/*
-    fwrite(pixmap, 1, width * height * 3, file);
-*/
-    printf("Converted to P3\n");
+
+    fwrite(pixmap, 3, width * height * 3, file);
+
     fclose(file);
     return;
 }
@@ -55,7 +54,6 @@ void write_p6(char *outfile, uint8_t *pixmap, int width, int height) {
 
     fwrite(pixmap, 3, width * height * 3, file);
 
-    printf("Converted to P6\n");
     fclose(file);
     return;
 }
@@ -101,7 +99,6 @@ int main(int argc, char *argv[]) {
     else if (strcmp(line, "P6\n") == 0) {
         p6 = true;
     }
-    printf("%s\n", line);
 
     // pass over comments
     while (1) {
@@ -115,12 +112,9 @@ int main(int argc, char *argv[]) {
 
     // get width and height
     dimensions = sscanf(buffer, "%u %u", &width, &height);
-    printf("%u\n", width);
-    printf("%u\n", height);
 
     // get max color value
     line = fgets(buffer, MAX, infile);
-    printf("%s\n", line);
 
     if (strncmp(line, "255", 3) != 0) {
         fail("Wrong max color.\n");
@@ -128,13 +122,9 @@ int main(int argc, char *argv[]) {
 
     // call either read_p3 or read_p6
     if (p3) {
-        printf("convert data to P%d\n", out_format);
-        printf("call read_p3\n");
         pixmap = read_p3(infile, width, height);
     }
     else if (p6) {
-        printf("convert data to P%d\n", out_format);
-        printf("call read_p6\n");
         pixmap = read_p6(infile, width, height);
     }
     else {
@@ -143,11 +133,9 @@ int main(int argc, char *argv[]) {
 
     // call either write_p3 or write_p6
     if(out_format == 3) {
-        printf("calling write_p3\n");
         write_p3(outfile, pixmap, width, height);
     }
     else {
-        printf("calling write_p6\n");
         write_p6(outfile, pixmap, width, height);
     }
 }
