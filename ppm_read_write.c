@@ -18,9 +18,8 @@ uint8_t *read_p3(FILE *file_in, int width, int height) {
 
     while (!feof(file_in)) {
         for(int i = 0; i < pixmap_size; i++) {
-            fread(pixel, 1, pixmap_size, file_in);
+            fread(pixel, sizeof(uint8_t), pixmap_size, file_in);
         }
-        break;
     }
 
     fclose(file_in);
@@ -28,11 +27,11 @@ uint8_t *read_p3(FILE *file_in, int width, int height) {
 }
 
 uint8_t *read_p6(FILE *file_in, int width, int height) {
-    int pixmap_size = width * height * 3;
+    int pixmap_size = width * height * 3 * sizeof(uint8_t);
     uint8_t *pixmap = malloc(pixmap_size);
 
     while (!feof(file_in)) {
-        fread(pixmap, sizeof(uint8_t), width * height, file_in);
+        fread(pixmap, sizeof(uint8_t), width * height * 3, file_in);
     }
 
     fclose(file_in);
@@ -41,22 +40,22 @@ uint8_t *read_p6(FILE *file_in, int width, int height) {
 
 void write_p3(char *outfile, uint8_t *pixmap, int width, int height) {
     FILE *file = fopen(outfile, "wb");
-    fprintf(file, "P3\n%u %u\n255", width, height);
-    printf("Converting to P3\n");
+    fprintf(file, "P3\n%u %u\n255\n", width, height);
+/*
+    fwrite(pixmap, 1, width * height * 3, file);
+*/
+    printf("Converted to P3\n");
     fclose(file);
     return;
 }
 
 void write_p6(char *outfile, uint8_t *pixmap, int width, int height) {
     FILE *file = fopen(outfile, "wb");
-    fprintf(file, "P6\n%u %u\n255", width, height);
-    int value;
-/*
-    for (int i = 0; i < width * height; i++) {
-        fprintf()
-    }
-*/
-    printf("Converting to P6\n");
+    fprintf(file, "P6\n%u %u\n255\n", width, height);
+
+    fwrite(pixmap, 3, width * height * 3, file);
+
+    printf("Converted to P6\n");
     fclose(file);
     return;
 }
@@ -144,9 +143,11 @@ int main(int argc, char *argv[]) {
 
     // call either write_p3 or write_p6
     if(out_format == 3) {
+        printf("calling write_p3\n");
         write_p3(outfile, pixmap, width, height);
     }
     else {
+        printf("calling write_p6\n");
         write_p6(outfile, pixmap, width, height);
     }
 }
